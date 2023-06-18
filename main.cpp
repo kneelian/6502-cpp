@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <exception>
 
 #define __DEBUG
 
@@ -14,16 +15,20 @@
 
 struct MEM_UNIT
 {
-	std::array<uint8_t, 65536> memory;
-	MEM_UNIT(){}
+	std::array<uint8_t, 65536>* memory = nullptr;
+	MEM_UNIT()
+	{
+		memory = new std::array<uint8_t, 65536>;
+		if(memory == nullptr) { std::terminate(); }
+	}
 
 	uint8_t seek(uint16_t address)
 	{
-		return memory[address];
+		return memory->at(address);
 	}
 	void   write(uint16_t address, uint8_t value)
 	{
-		memory[address] = value;
+		memory->at(address) = value;
 		return;
 	}
 };
