@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <array>
 #include <exception>
 
@@ -188,7 +188,7 @@ void CPU::decode(uint8_t op)
 		technically speaking implied == accumulator,
 		but official docs use this terminology so w/e
 	*/
-
+/*
 	if(op & 3)              // illegal opcodes are in these 4 columns
 	{ 
 		return; 
@@ -423,13 +423,12 @@ void CPU::decode(uint8_t op)
 	}
 
 }
+*/
+
+#include "6502.hpp"
 
 int main()
 {	
-	std::cout << "Hello, world!"  << std::endl;
-	std::cerr << "(ERROR OUTPUT)" << std::endl;
 	CPU test;
-	CPU test_2;
-	CPU test_3;
 	return 0;
 }
