@@ -191,7 +191,7 @@ void CPU::_log_fetch()
 {
 	#if defined(_USING_FMT)
 		fmt::print("Fetched insn {0:x} from {1:x}\n",
-    	/* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
+		/* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
 		          fmt::styled(PC - 1,fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
     	);
 	#else
