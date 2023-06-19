@@ -179,8 +179,8 @@ void CPU::_log_start()
 	if(_DEBUG_LVL == 0) { return; }
 	#if defined(_USING_FMT)
 		fmt::print("Initialised 6502 CPU; implementation version {0:.2f}\nUsing {1} for output.\n",
-        /* --> */ fmt::styled(0.01, fmt::fg(fmt::color::crimson) | fmt::emphasis::italic | fmt::emphasis::bold),
-				  fmt::styled("FMT",fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
+		/* --> */ fmt::styled(0.01, fmt::fg(fmt::color::crimson) | fmt::emphasis::italic | fmt::emphasis::bold),
+		          fmt::styled("FMT",fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
     	);
 	#else
 		std::cout << "Initialised 6502 CPU; implementation version " << 0.01 << "\nUsing std::cout for output."<< std::endl;
@@ -191,8 +191,8 @@ void CPU::_log_fetch()
 {
 	#if defined(_USING_FMT)
 		fmt::print("Fetched insn {0:x} from {1:x}\n",
-        /* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
-				  fmt::styled(PC - 1,fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
+    	/* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
+		          fmt::styled(PC - 1,fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
     	);
 	#else
 		std::cout << "Fetched insn " << std::hex << _insn << " from " << PC-1 << std::dec << std::endl;
