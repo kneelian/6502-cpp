@@ -33,9 +33,11 @@ struct CPU
 	uint8_t   SP; 
 	uint16_t  PC; 
 	uint16_t  EA;
-	uint16_t  TEMP;
 
-	uint8_t _insn;
+	uint16_t  TEMP_1;
+	uint16_t  TEMP_2;
+
+	uint8_t   _insn;
 
 	uint64_t  _cycles;
 	uint64_t  _instructions;
@@ -46,6 +48,7 @@ struct CPU
 	void _log_start();
 	void _log_insns();
 	void _log_fetch();
+	void _log_execute();
 
 	uint8_t read(uint16_t address)
 	{
@@ -91,7 +94,8 @@ struct CPU
 		PC = 0;
 		EA = 0;
 
-		TEMP = 0;
+		TEMP_1 = 0;
+		TEMP_2 = 0;
 
 		_insn = 0;
 
@@ -170,7 +174,12 @@ struct CPU
 	void fetch()
 	{
 		_insn = read(PC++);
-		_log_fetch();
+		if(_DEBUG_LVL) { _log_fetch(); }
+	}
+
+	void execute()
+	{
+		if(_DEBUG_LVL) { _log_execute(); }
 	}
 };
 
@@ -199,3 +208,16 @@ void CPU::_log_fetch()
 	#endif
 }
 
+void CPU::_log_execute() // currently placeholdered
+{
+	#if defined(_USING_FMT)
+		fmt::print("Fetched insn {0:x} from {1:x}\n",
+		/* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
+		          fmt::styled(PC - 1,fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
+    	);
+	#else
+		std::cout << "Fetched insn " << std::hex << _insn << " from " << PC-1 << std::dec << std::endl;
+	#endif 
+}
+
+#include "tables.hpp"
