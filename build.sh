@@ -1,1 +1,1 @@
-g++ main.cpp -o main.a -O0
+g++ main.cpp -o main.a -O0 -Iinclude -L./lib -lfmt

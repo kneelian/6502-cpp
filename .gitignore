@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Junk files
+*.junk
+*.tmp
