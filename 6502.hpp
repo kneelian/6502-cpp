@@ -10,7 +10,7 @@
 #define _NEGA      0x80
 
 #define _DEBUG_LVL     1
-#define _UNIMPLEMENTED FALSE
+#define _UNDOCUMENTED  FALSE
 #define _BCD           FALSE
 
 #define _USING_FMT
@@ -23,6 +23,8 @@
 #else
 	#include <iostream>
 #endif
+
+#include "tables.hpp"
 
 struct CPU
 {
@@ -37,6 +39,8 @@ struct CPU
 	uint16_t  TEMP_1;
 	uint16_t  TEMP_2;
 
+	uint8_t   _operation;
+	uint8_t   _addrmode;
 	uint8_t   _insn;
 
 	uint64_t  _cycles;
@@ -48,6 +52,7 @@ struct CPU
 	void _log_start();
 	void _log_insns();
 	void _log_fetch();
+	void _log_decode();
 	void _log_execute();
 
 	uint8_t read(uint16_t address)
@@ -97,6 +102,8 @@ struct CPU
 		TEMP_1 = 0;
 		TEMP_2 = 0;
 
+		_operation = 0;
+		_addrmode = 0;
 		_insn = 0;
 
 		_cycles = 0;
@@ -177,47 +184,68 @@ struct CPU
 		if(_DEBUG_LVL) { _log_fetch(); }
 	}
 
+	uint8_t read_pc()
+	{
+		TEMP_1 = read(PC++);
+		if(_DEBUG_LVL) { _log_fetch(); }
+		return TEMP_1;
+	}
+
+	void decode()
+	{
+		_operation   = op_table[_insn];
+		_addrmode    = addr_table[_insn];
+		if(_DEBUG_LVL) { _log_decode(); }
+	}
+
 	void execute()
 	{
 		if(_DEBUG_LVL) { _log_execute(); }
+	}
+
+	void tick()
+	{
+		fetch();
+		decode();
+		execute();
+
+		_instructions++;
 	}
 };
 
 void CPU::_log_start()
 {
-	if(_DEBUG_LVL == 0) { return; }
 	#if defined(_USING_FMT)
-		fmt::print("Initialised 6502 CPU; implementation version {0:.2f}\nUsing {1} for output.\n",
-		/* --> */ fmt::styled(0.01, fmt::fg(fmt::color::crimson) | fmt::emphasis::italic | fmt::emphasis::bold),
-		          fmt::styled("FMT",fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
+		fmt::print("Initialised 6502 CPU; implementation version {0}\nUsing {1} for output.\n",
+		/* --> */ fmt::styled("0.01", fmt::fg(fmt::color::crimson) | fmt::emphasis::italic | fmt::emphasis::bold),
+		          fmt::styled("FMT" , fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
     	);
+    	fmt::print("Memory unit address: 0x{0:x}\n", 
+    		fmt::styled(uint64_t(memory), fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold));
 	#else
-		std::cout << "Initialised 6502 CPU; implementation version " << 0.01 << "\nUsing std::cout for output."<< std::endl;
+		std::cout << "Initialised 6502 CPU; implementation version " << "0.01" << "\nUsing std::cout for output."<< std::endl;
+		std::cout << "Memory unit address: 0x" << std::hex << memory << std::dec << std::endl;
 	#endif
 }
 
 void CPU::_log_fetch()
 {
 	#if defined(_USING_FMT)
-		fmt::print("Fetched insn {0:x} from {1:x}\n",
+		fmt::print("Fetched data {0:x} from {1:x}\n",
 		/* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
 		          fmt::styled(PC - 1,fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
     	);
 	#else
-		std::cout << "Fetched insn " << std::hex << _insn << " from " << PC-1 << std::dec << std::endl;
+		std::cout << "Fetched data " << std::hex << _insn << " from " << PC-1 << std::dec << std::endl;
 	#endif
+}
+
+void CPU::_log_decode() // currently placeholdered
+{ 
+	/* give us address, opcode, operation, addrmode */ 
 }
 
 void CPU::_log_execute() // currently placeholdered
 {
-	#if defined(_USING_FMT)
-		fmt::print("Fetched insn {0:x} from {1:x}\n",
-		/* --> */ fmt::styled(_insn, fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold),
-		          fmt::styled(PC - 1,fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
-    	);
-	#else
-		std::cout << "Fetched insn " << std::hex << _insn << " from " << PC-1 << std::dec << std::endl;
-	#endif 
+	/* give us operands and result */
 }
-
-#include "tables.hpp"
