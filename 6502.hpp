@@ -13,7 +13,7 @@
 #define _UNDOCUMENTED  FALSE
 #define _BCD           FALSE
 
-#define _USING_FMT
+//#define _USING_FMT
 
 #define _STACK_BASE 0x100
 
@@ -42,8 +42,8 @@ struct CPU
 	uint16_t  TEMP_1;
 	uint16_t  TEMP_2;
 
-	uint8_t   _operation;
-	uint8_t   _addrmode;
+	OPERATION         _operation;
+	ADDRESSING_MODE   _addrmode;
 	uint8_t   _insn;
 
 	uint64_t  _cycles;
@@ -105,8 +105,8 @@ struct CPU
 		TEMP_1 = 0;
 		TEMP_2 = 0;
 
-		_operation = 0;
-		_addrmode = 0;
+		_operation = brk;
+		_addrmode  = imp;
 		_insn = 0;
 
 		_cycles = 0;
@@ -179,7 +179,7 @@ struct CPU
 
 	void prep_args(ADDRESSING_MODE addrm)
 	{
-		select(addrm)
+		switch(addrm)
 		{
 			case imp:
 			case acc:
