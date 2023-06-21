@@ -258,7 +258,14 @@ void CPU::_log_fetch()
 
 void CPU::_log_decode() // currently placeholdered
 {
+	std::string addressmd = "???";
+	std::string operation = "???";
+
 	/* give us address, opcode, operation, addrmode */
+	#if defined(_USING_FMT)
+	#else
+		std::cout << std::hex << "0x" << PC-1 << ": 0x" << _insn << " -- " << addressmd << " " << operation << std::endl;
+	#endif
 }
 
 void CPU::_log_execute() // currently placeholdered
