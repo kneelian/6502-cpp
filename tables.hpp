@@ -78,7 +78,7 @@ enum OPERATION : uint8_t
 	bvc,        // branch on overflow clear
 	rts,        // return from subroutine
 	bvs,        // branch on overflow set
-	nop,        
+	nop,
 	ldy,        // load y
 	bcs,        // branch on carry set
 	cpy,        // compare with y
@@ -102,9 +102,9 @@ enum OPERATION : uint8_t
 	slo,        // illegal shift-left mem And or with a
 	rla,        // ROL mem And And
 	sre,        // LSR mem And EOR
-	rra,		// ROR mem And ADC
+	rra,        // ROR mem And ADC
 	sax,        // mem = A And X, no changes to a
-	lax,		// LDA mem + LDX mem
+	lax,	    // LDA mem + LDX mem
 	dcp,        // DEC mem + CMP
 	isb,        // INC mem + SBC mem
 
