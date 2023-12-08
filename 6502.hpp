@@ -13,7 +13,7 @@
 #define _UNDOCUMENTED  FALSE
 #define _BCD           FALSE
 
-#define _USING_FMT
+//#define _USING_FMT
 
 #define _STACK_BASE 0x100
 
@@ -28,19 +28,22 @@
 
 struct CPU
 {
-	uint8_t   A;  
-	uint8_t   X;  
-	uint8_t   Y;  
-	uint8_t   F;  
-	uint8_t   SP; 
-	uint16_t  PC; 
+	uint8_t   A;
+	uint8_t   X;
+	uint8_t   Y;
+	uint8_t   F;
+	uint8_t   SP;
+	uint16_t  PC;
 	uint16_t  EA;
+
+	uint8_t* _op_a;
+	uint8_t* _op_b;
 
 	uint16_t  TEMP_1;
 	uint16_t  TEMP_2;
 
-	uint8_t   _operation;
-	uint8_t   _addrmode;
+	OPERATION         _operation;
+	ADDRESSING_MODE   _addrmode;
 	uint8_t   _insn;
 
 	uint64_t  _cycles;
@@ -102,8 +105,8 @@ struct CPU
 		TEMP_1 = 0;
 		TEMP_2 = 0;
 
-		_operation = 0;
-		_addrmode = 0;
+		_operation = brk;
+		_addrmode  = imp;
 		_insn = 0;
 
 		_cycles = 0;
@@ -141,7 +144,7 @@ struct CPU
 	{ return (n & 0xff) == 0; }
 
 	void upd_zero(uint16_t n)
-	{ 
+	{
 		if(check_zero(n)) { set_zero(); }
 		else { clr_zero(); }
 	}
@@ -150,7 +153,7 @@ struct CPU
 	{ return (n > 0xff); }
 
 	void upd_carry(uint16_t n)
-	{ 
+	{
 		if(check_carry(n)) { set_carry(); }
 		else { clr_carry(); }
 	}
@@ -160,7 +163,7 @@ struct CPU
 
 
 	void upd_nega(uint16_t n)
-	{ 
+	{
 		if(check_nega(n)) { set_nega(); }
 		else { clr_nega(); }
 	}
@@ -172,6 +175,17 @@ struct CPU
 	{
 		if(check_ovfl(temp, A, operand)) { set_ovfl(); }
 		else { clr_ovfl(); }
+	}
+
+	void prep_args(ADDRESSING_MODE addrm)
+	{
+		switch(addrm)
+		{
+			case imp:
+			case acc:
+			default:
+				return;
+		}
 	}
 
 	void reset();
@@ -201,6 +215,8 @@ struct CPU
 	void execute()
 	{
 		if(_DEBUG_LVL) { _log_execute(); }
+		prep_args(_addrmode);
+
 	}
 
 	void tick()
@@ -220,7 +236,7 @@ void CPU::_log_start()
 		/* --> */ fmt::styled("0.01", fmt::fg(fmt::color::crimson) | fmt::emphasis::italic | fmt::emphasis::bold),
 		          fmt::styled("FMT" , fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold)
     	);
-    	fmt::print("Memory unit address: 0x{0:x}\n", 
+    	fmt::print("Memory unit address: 0x{0:x}\n",
     		fmt::styled(uint64_t(memory), fmt::fg(fmt::color::medium_aquamarine) | fmt::emphasis::bold));
 	#else
 		std::cout << "Initialised 6502 CPU; implementation version " << "0.01" << "\nUsing std::cout for output."<< std::endl;
@@ -241,8 +257,15 @@ void CPU::_log_fetch()
 }
 
 void CPU::_log_decode() // currently placeholdered
-{ 
-	/* give us address, opcode, operation, addrmode */ 
+{
+	std::string addressmd = "???";
+	std::string operation = "???";
+
+	/* give us address, opcode, operation, addrmode */
+	#if defined(_USING_FMT)
+	#else
+		std::cout << std::hex << "0x" << PC-1 << ": 0x" << _insn << " -- " << addressmd << " " << operation << std::endl;
+	#endif
 }
 
 void CPU::_log_execute() // currently placeholdered
