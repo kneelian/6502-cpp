@@ -6,6 +6,8 @@
 *.lo
 *.o
 *.obj
+*.so
+*.so*
 
 # Precompiled Headers
 *.gch
@@ -34,3 +36,6 @@
 # Junk files
 *.junk
 *.tmp
+
+# FMT files
+/include/fmt/*
